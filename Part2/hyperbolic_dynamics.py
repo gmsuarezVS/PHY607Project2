@@ -64,3 +64,4 @@ def evolve(state, dt, steps, alpha, length):
     return history
 
 
+def wall_crossings(state_before, state_after, y0):
