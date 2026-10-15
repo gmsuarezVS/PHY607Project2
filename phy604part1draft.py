@@ -2,9 +2,7 @@
 
 import numpy as np
 
-
-#This class is mostly formal, honestly, but is somewhat useful
-#It makes random numbers & computes the velocity if diffuse
+#produces random numbers for positions, and computes wallbouncing function
 class Particles:
 
     #1) compute depth into hyperbolic space from inputs - moved into #3)
@@ -16,7 +14,7 @@ class Particles:
         for i in range(n):
             good = False
             while not good:
-              random=np.random.uniform(-5,5)
+              random=np.random.uniform(-10,10)
               sample=np.random.uniform(0,1)
               if sample<=np.exp(-random**2/2):
                   good=True
@@ -25,16 +23,16 @@ class Particles:
 
     #3) computes particles and their states/velocities from input
 
-    def particles(self,n,y0,length,temperature)
+    def particles(self,n,y0,length,temperature):
         #should take in n particles, length L of space x, minimum y0, temp T at least
         if n<1 or length<=0 or y0<=0 or temperature<=0:
             print("You have to have at least one particle... and must be physical")
         state=np.empty((n,4)) #Following syntax of Di
 
-        #using
         for i in range(n):
             state[i,0]=np.random.uniform(0,length) #x position
-            state[i,1]=y0/(1-np.random.uniform(0,1)) #y position
+            #The CDF is D=1-y0/y &
+            state[i,1]=y0/(1-np.random.uniform(0,1)) #y position inverse CDF
 
         vx=self.normal(n)
         vy=self.normal(n)
@@ -44,9 +42,15 @@ class Particles:
 
     #4) velocity after particle hits the wall if diffuse
 
-    def wallbounce_velocity
+    def wallbounce_velocity(self,y0,temperature):
         #computes v_x and v_y with new formula if diffuse is chosen, then returns them
         vx=np.sqrt(temperature)*self.normal(1)[0]
-
-    #that should be it-but this is modular enough to add more without issue later
+        good=False
+        while not good:
+            random=np.random.uniform(0,10)
+            sample=np.random.uniform(0,1)
+            if sample<=random*np.exp(-(sample**2)/2):
+                good=True
+        vy=np.sqrt(temperature)*random
+        return y0*np.array([vx,vy])
 
