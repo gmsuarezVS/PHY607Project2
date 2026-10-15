@@ -50,18 +50,3 @@ def rk4_step(state, dt, derivative, *args):
     k3 = derivative(state + dt * k2 / 2.0, *args)
     k4 = derivative(state + dt * k3, *args)
     return state + dt * (k1 + 2.0 * k2 + 2.0 * k3 + k4) / 6.0
-
-
-def evolve(state, dt, steps, alpha, length):
-    history = np.empty((steps + 1, len(state), 4))
-    history[0] = state
-
-    for step in range(steps):
-        state = rk4_step(state, dt, equations, alpha, length)
-        state[:, 0] %= length
-        history[step + 1] = state
-
-    return history
-
-
-def wall_crossings(state_before, state_after, y0):
