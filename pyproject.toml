@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "example_package_Wudiersss_gmsuarezVS"
+version = "0.0.1"
+dependencies = ["numpy", "scipy", "matplotlib", "mpmath"]
+authors = [ 
+    {name="Di"}
+    {name="Gabe"}
+]
+description = "A fun classical billiards interacting in Hyperbolic space simulation for Physics 607 Fall 2026 Under Professor Alexander Nitz. Done by Di Wu and Gabriel Suarez"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.scripts]
+phy607="phy607project2_billiards.phy607main:main"
+
+[project.urls]
+Homepage = "https://github.com/gmsuarezVS/PHY607Project2/"
+Issues = "https://github.com/gmsuarezVS/PHY607Project2/"
