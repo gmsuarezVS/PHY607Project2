@@ -1,8 +1,8 @@
 import numpy as np
 from scipy.integrate import solve_ivp
 
-from hyperbolic_dynamics import equations, rk4_step
-from phy607part1 import Particles #need to go back and rename script 1 !!
+from .hyperbolic_dynamics import equations, rk4_step
+from .phy607part1 import Particles #need to go back and rename script 1 !!
 
 def scipys(time,values,alpha,length):
     state=values.reshape((-1,4))
