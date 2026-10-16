@@ -23,4 +23,4 @@ phy607="phy607project2_billiards.phy607main:main"
 
 [project.urls]
 Homepage = "https://github.com/gmsuarezVS/PHY607Project2/"
-Issues = "https://github.com/gmsuarezVS/PHY607Project2/"
+Issues = "https://github.com/gmsuarezVS/PHY607Project2/issues"
