@@ -106,18 +106,42 @@ def saveresults(results,output,y0,temperature,alpha,diffuse_probability,mc_depth
 
     average=np.empty(6)
     error=np.empty(6)
-        #....
+    #for some runs, there could be no results for certain variables so np.nan keeps it solid
+    average[:]=np.nan
+    error[:]=np.nan
+    for i in range(6):
+        values=means[:,i]
+        #this removes the np.nan values
+        values=values[np.isfinite(values)]
+        #not taking any chances like in the last project
+        if len(values)>0:
+            average[j]=np.mean(values)
+        if len(values)>1:
+            error[j]=np.std(values,ddof=1)/np.sqrt(len(values))
 
+#2) printing all outputs from simulation
+
+#the 4 key statistics should go first - depth, cos(theta), path, energy, temp
+    print("")
+
+#diffusion statistics from the wall bouncing
+
+#print out the exact comparison we wanted to see/test
 
 #2) plot all the heights of the particles at the end of the simulations
 
-#3) compute collision angles, depth distribution, particle length between hits and demonstrate
+#first depth distribution e.g. particle density vs s=log(y/y0)
+
+#wall angles and their density e.g. theta vs cos(theta)/2
+
+#path lengths - a histogram of lengths perhaps
+
+#energy over time
+
+#momenta change in x
+
+#kinetic energy to compare to the expected equilibrium distribution at temp T
+
+#the final particle heights over hyperbolic space (well the slice of it that we chose)
 
 #4) clean up plots/present results....
-
-#5) compute for diffusion probability=0, the conserved energy, other deterministic features
-
-#6) for non zero probability, since it's not deterministic (well, it is, but cause randomness is determinstic on python)
-#we compute momenta over time (no longer conserved in x), average energy is temp, etc.
-
-#^^the above are "just" def to be applied in the master script so not too worried
