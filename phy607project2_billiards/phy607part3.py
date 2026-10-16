@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import mpmath as mp
 import numpy as np
 
-from .phy607part1 import Particles #must update name later !!
+from .phy607part1 import Particles
 
 #1) define function that takes in results from part 2,
 #and computes "observables" (classical ones like temperature, energy, distribution, etc.)
