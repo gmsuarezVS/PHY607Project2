@@ -8,7 +8,7 @@ def scipys(alpha,length,time,values):
     state=values.reshape((-1,4))
     return np.concatenate(equations(alpha,state,length))
 
-def step_with_wall(state, dt, alpha, length, y0, Tw, Pd, rng):
+def step_with_wall(state, dt, alpha, length, y0, Tw, Pd, rng,solver):
     # Part II calculates one proposed step
     if solver == "rk4":
         new_state = rk4_step(state, dt, equations, alpha, length)
