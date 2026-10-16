@@ -108,9 +108,9 @@ def saveresults(results,y0,temperature,alpha,Pd,depths):
         values=values[np.isfinite(values)]
         #not taking any chances like in the last project
         if len(values)>0:
-            average[j]=np.mean(values)
+            average[i]=np.mean(values)
         if len(values)>1:
-            error[j]=np.std(values,ddof=1)/np.sqrt(len(values))
+            error[i]=np.std(values,ddof=1)/np.sqrt(len(values))
 
 #2) printing all outputs from simulation, got \u00b1 online
 #https://stackoverflow.com/questions/27872250/plus-minus-operator-for-python-%C2%B1
@@ -139,7 +139,7 @@ def saveresults(results,y0,temperature,alpha,Pd,depths):
 
 #first depth distribution e.g. particle density vs s=log(y/y0)
     plt.subplot(2,3,1)
-    plt.tilte("Distribution of y depths")
+    plt.title("Distribution of y depths")
     plt.hist(sall,density=True,label="computed ode")
     s=np.linspace(0,6)
     if alpha==0:
@@ -155,7 +155,7 @@ def saveresults(results,y0,temperature,alpha,Pd,depths):
     plt.title("The ingoing wall angles")
     if len(thetaall)>0:
         plt.hist(thetaall,density=True)
-    theta=np.linscape(-np.pi/2,np.pi/2)
+    theta=np.linspace(-np.pi/2,np.pi/2)
     if alpha==0 or Pd>0:
         plt.plot(theta,np.cos(theta)/2,label="Equilibrium cosine law")
         plt.legend()
@@ -164,14 +164,14 @@ def saveresults(results,y0,temperature,alpha,Pd,depths):
 
 #path lengths - a histogram of lengths perhaps
     plt.subplot(2,3,3)
-    plt.title("Complete path lengths between x=0, x=L")
+    plt.title("Complete path lengths of hitting y0 to returning to y0 later")
     if len(lengthall)>0:
         plt.hist(lengthall,density=True)
     if alpha==0:
         plt.axvline(average[2],label="Measured mean")
         plt.legend()
     plt.xlabel("Path length")
-    plt.yalbel("Density of paths at length L")
+    plt.ylabel("Density of paths at length L")
 
 #energy over time
     plt.subplot(2,3,4)
@@ -202,14 +202,14 @@ def saveresults(results,y0,temperature,alpha,Pd,depths):
         plt.plot(k,np.exp(-k/temperature)/temperature,label="At Equilibrium")
         plt.legend()
     plt.xlabel("Kinetic E")
-    plt.ylalbel("Density of particles with energy E")
+    plt.ylabel("Density of particles with energy E")
 
     plt.show()
 
 #the final particle heights over hyperbolic space (well the slice of it that we chose)
     plt.figure()
     plt.title("Final particle heights")
-    plt.hist(finalehights,density=True)
+    plt.hist(finalheights,density=True)
     if alpha==0:
         y=np.linspace(y0,max(finalheights))
         plt.plot(y,y0/y**2,label="Exact y0/y^2")
