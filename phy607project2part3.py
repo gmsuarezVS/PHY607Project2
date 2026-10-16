@@ -1,15 +1,9 @@
 #very rough outline for part 3 (no point to flesh out atm anyways)
-import matplotlib
+import matplotlib.pyplot as plt
 import mpmath as mp
 import numpy as np
 
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-
-#necessarily import the stuff from pt 1, and pt 2
-#something like from "filename part1" import Particles
-
-# the particles from part 1, and equations, rk4 from part 2
+from phy607part1 import Particles #must update name later !!
 
 #1) define function that takes in results from part 2,
 #and computes "observables" (classical ones like temperature, energy, distribution, etc.)
@@ -26,10 +20,10 @@ def potentialE(state,length,alpha):
 #total energy-which needs be separate, since potential is their interaction term
 def totalE(state,length,alpha):
     kineticE=np.sum((state[:,2]**2+state[:,3]**2)/(2*state[:,1]**2))
-    return kineticE+potentialE
+    return kineticE+potentialE(state,length,alpha)
 
 #how we "know" our code is "right" (quotes because not really in our case, but good enough)
-def themeasure(y0,lenght,alpha,result):
+def themeasure(y0,length,alpha,result):
     #we compute some stoof (finally)
     states=result["states"]
     E=np.empty(len(states))
@@ -43,14 +37,13 @@ def themeasure(y0,lenght,alpha,result):
     result["momentum"]=Px
     #here y is states[:,:,1] from part 2
     result["depth"]=np.concatenate(np.log(states[:,:,1]/y0))
-    result["kinetic"]=np.concatenate(np.sum((states[:,:,2]**2+states[:,:,3]**2)/(2*states[:,:,1]**2)))
+    result["kinetic"]=np.concatenate((states[:,:,2]**2+states[:,:,3]**2)/(2*states[:,:,1]**2))
     return result
 
 #regretting this choice of depth check but ay it is what it is
 def depthmetropolis(alpha,burn,L,N,seed,sweeps,Tw,y0):
-    sampler=Particles()
     np.random.seed(seed)
-    state=sampler.partciles(L,N,Tw,y0)
+    state=Particles().particles(N,y0,L,Tw)
     V=potentialE(state,L,alpha)
     depth=[]
 
@@ -59,17 +52,18 @@ def depthmetropolis(alpha,burn,L,N,seed,sweeps,Tw,y0):
             trial=state.copy()
             trial[i,0]=np.random.uniform(0,L)
             v=np.random.uniform(0,1)
+            trial[i,1]=y0/(1-v)
             tildeV=potentialE(trial,L,alpha)
             deltaV=tildeV-V
             if deltaV<=0 or np.random.uniform(0,1)<np.exp(-deltaV/Tw):
                 state=trial
                 V=tildeV
-        if sweep>=burn and (sweep-burn) % sample_every ==0:
+        if sweep>=burn: #didn't need the sample_every idea anyways just record em all
             for i in range(N):
               depth.append(np.log(state[i,1]/y0))
     return np.array(depth)
 
-def saveresults(results,output,y0,temperature,alpha,diffuse_probability,mc_depth):
+def saveresults(results,y0,temperature,alpha,Pd,depths):
     amount=len(results)
     means=np.empty((amount,6))
     means[:]=np.nan
@@ -79,7 +73,7 @@ def saveresults(results,output,y0,temperature,alpha,diffuse_probability,mc_depth
     kall=[]
     finalheights=[]
 
-    for trial in range(M):
+    for trial in range(amount):
         r=results[trial]
         s=r["depth"]
         theta=r["angles"]
@@ -88,7 +82,7 @@ def saveresults(results,output,y0,temperature,alpha,diffuse_probability,mc_depth
         means[trial,0]=np.mean(s)
         if len(theta)>0:
             means[trial,1]=np.mean(np.cos(theta))
-            means[trial,5]=np.mean(r["kinds"])
+            means[trial,5]=np.mean(r["types"])
         if len(length)>0:
             means[trial,2]=np.mean(length)
         means[trial,3]=np.mean(k)
@@ -119,14 +113,27 @@ def saveresults(results,output,y0,temperature,alpha,diffuse_probability,mc_depth
         if len(values)>1:
             error[j]=np.std(values,ddof=1)/np.sqrt(len(values))
 
-#2) printing all outputs from simulation
-
-#the 4 key statistics should go first - depth, cos(theta), path, energy, temp
-    print("")
-
-#diffusion statistics from the wall bouncing
+#2) printing all outputs from simulation, got \u00b1 online
+#https://stackoverflow.com/questions/27872250/plus-minus-operator-for-python-%C2%B1
+    print("Mean depth:",average[0],"\u00b1",error[0])
+    print("Mean cos(angle):",average[1],"\u00b1",error[1])
+    print("Mean path length:",average[2],"\u00b1",error[2])
+    print("Mean kinetic energy (temperature estimate):",average[3],"\u00b1",error[3])
+    print("Mean(k**2)/mean(k)**2:",average[4],"\u00b1",error[4])
+    print("Diffuse fraction:",average[5],"\u00b1",error[5],"Input Pd:",Pd)
+    print("Wall hits:",len(thetaall),"Complete paths:",len(lengthall))
 
 #print out the exact comparison we wanted to see/test
+    if alpha==0:
+        print("Ideal mean depth, cos(angle), path: ",1,np.pi/4,np.pi)
+    if alpha==0 or Pd>0:
+        print("At equilibrium, the mean kinetic energy and moment ratio: ",temperature,2)
+    if Pd==0:
+        print("Since this is specular, go check the conservation of total energy and x momentum")
+    else:
+        print("The diffuse wall can/will likely change total energy and x momentum.")
+    if depths is not None and len(depths)>0:
+        print("Metropolis mean depth:",np.mean(depths))
 
 #2) plot all the heights of the particles at the end of the simulations
 
