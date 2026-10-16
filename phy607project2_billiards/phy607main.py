@@ -1,8 +1,8 @@
 import numpy as np
 
-from phy607part1 import Particles
-from phy607part2 import evolve
-from phy607part3 import themeasure,depthmetropolis,saveresults
+from .phy607part1 import Particles
+from .phy607part2 import evolve
+from .phy607part3 import themeasure,depthmetropolis,saveresults
 
 def main():
     solver=input("Which integration method - RK4, scipy: ").lower() #lower should fix captilization issues
