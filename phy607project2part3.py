@@ -1,4 +1,3 @@
-#very rough outline for part 3 (no point to flesh out atm anyways)
 import matplotlib.pyplot as plt
 import mpmath as mp
 import numpy as np
@@ -136,19 +135,85 @@ def saveresults(results,y0,temperature,alpha,Pd,depths):
         print("Metropolis mean depth:",np.mean(depths))
 
 #2) plot all the heights of the particles at the end of the simulations
+    plt.figure() #leaving the figsize implicit for now
 
 #first depth distribution e.g. particle density vs s=log(y/y0)
+    plt.subplot(2,3,1)
+    plt.tilte("Distribution of y depths")
+    plt.hist(sall,bins=,density=True,label="computed ode")
+    s=np.linspace(0,6)
+    if alpha==0:
+        plt.plot(s,np.exp(-s),label="The exact e^(-s)")
+    if depths is not None and len(depths)>0:
+        plt.hist(depths,density=True,histtype="step",label="metropolis simulation")
+    plt.xlabel("log(y/y0)")
+    plt.ylabel("Density of points")
+    plt.legend()
 
 #wall angles and their density e.g. theta vs cos(theta)/2
+    plt.subplot(2,3,2)
+    plt.title("The ingoing wall angles")
+    if len(thetaall)>0:
+        plt.hist(thetaall,density=True)
+    theta=np.linscape(-np.pi/2,np.pi/2)
+    if alpha==0 or Pd>0:
+        plt.plot(theta,np.cos(theta)/2,label="Equilibrium cosine law")
+        plt.legend()
+    plt.xlabel("The angle (rad)")
+    plt.ylabel("Density of angles")
 
 #path lengths - a histogram of lengths perhaps
+    plt.subplot(2,3,3)
+    plt.title("Complete path lengths between x=0, x=L")
+    if len(lengthall)>0:
+        plt.hist(lengthall,density=True)
+    if alpha==0:
+        plt.axvline(average[2],label="Measured mean")
+        plt.legend()
+    plt.xlabel("Path length")
+    plt.yalbel("Density of paths at length L")
 
 #energy over time
+    plt.subplot(2,3,4)
+    plt.title("Change in total energy")
+    for trial in range(amount):
+        time=results[trial]["times"]
+        E=results[trial]["energy"]
+        plt.plot(time,E-E[0])
+    plt.xlabel("Time")
+    plt.ylabel("\u0394 E")
 
 #momenta change in x
+    plt.subplot(2,3,5)
+    plt.title("change in x momentum")
+    for trial in range(amount):
+        time=results[trial]["times"]
+        Px=results[trial]["momentum"]
+        plt.plot(time,Px-Px[0])
+    plt.xlabel("Time")
+    plt.ylabel("\u0394 Px")
 
 #kinetic energy to compare to the expected equilibrium distribution at temp T
+    plt.subplot(2,3,6)
+    plt.title("Kinetic per particle")
+    plt.hist(kall,density=True)
+    k=np.linspace(0,6*temperature)
+    if alpha==0 or Pd>0:
+        plt.plot(k,np.exp(-k/temperature)/temperature,label="At Equilibrium")
+        plt.legend()
+    plt.xlabel("Kinetic E")
+    plt.ylalbel("Density of particles with energy E")
+
+    plt.show()
 
 #the final particle heights over hyperbolic space (well the slice of it that we chose)
-
-#4) clean up plots/present results....
+    plt.figure()
+    plt.title("Final particle heights")
+    plt.hist(finalehights,density=True)
+    if alpha==0:
+        y=np.linspace(y0,max(finalheights))
+        plt.plot(y,y0/y**2,label="Exact y0/y^2")
+        plt.legend()
+    plt.xlabel("Height y")
+    plt.ylabel("Density of particles with height y")
+    plt.show()
