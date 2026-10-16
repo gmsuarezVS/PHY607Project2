@@ -7,7 +7,7 @@ name = "example_package_Wudiersss_gmsuarezVS"
 version = "0.0.1"
 dependencies = ["numpy", "scipy", "matplotlib", "mpmath"]
 authors = [ 
-    {name="Di"}
+    {name="Di"},
     {name="Gabe"}
 ]
 description = "A fun classical billiards interacting in Hyperbolic space simulation for Physics 607 Fall 2026 Under Professor Alexander Nitz. Done by Di Wu and Gabriel Suarez"
